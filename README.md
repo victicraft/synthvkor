@@ -16,7 +16,9 @@ When executed, it selects all notes in the current track, and if any of them con
 
 - ~~add double batchim to json object (i forgot)~~
 - ~~batchim context~~
-- palatalization
+- ~~palatalization~~
+- nasalization
+- liquidization
 
 ### Impossible???
 
