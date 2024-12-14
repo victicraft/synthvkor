@@ -14,8 +14,9 @@ When executed, it selects all notes in the current track, and if any of them con
 
 ### Possible
 
-- add double batchim to json object (i forgot)
-- different phonemes depending on context (especially palatalization)
+- ~~add double batchim to json object (i forgot)~~
+- ~~batchim context~~
+- palatalization
 
 ### Impossible???
 
