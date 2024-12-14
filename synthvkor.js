@@ -62,11 +62,6 @@ function main() {
 
         const phonemeData = getAllPhonemes(entireLyrics);
 
-        // const phonemeString = JSON.stringify(phonemeData, null, 2);
-
-        // SV.showMessageBox("Processed Lyrics", phonemeString);
-
-
         for (j = 0; j < numOfNotes; j++) {
             currentNote = noteGroups[i].getNote(j);
 
@@ -75,14 +70,13 @@ function main() {
             // Skip the note if the phoneme is null
             if (phoneme) {
                 currentNote.setPhonemes(phoneme.phoneme); // Apply the phoneme to the note
-                SV.showMessageBox("Success", JSON.stringify(currentNote.getAttributes()));
                 currentNote.setAttributes({"languageOverride": phoneme.language}); // Assign the language to the note
             }
             
         }
     }
 
-    SV.showMessageBox("Success", "Phonemes and language assigned to all notes!");
+    SV.showMessageBox("Success", "Phonemes assigned to all notes!");
 }
 
 
@@ -180,6 +174,10 @@ function getPhonemes(jamos) {
 
                 // check for a matching batchim (final consonant)
                 if (phonemeData.batchim[b]) {
+                    if(b.match(/[ㄳㄵㄶㄺㄻㄼㄽㄾㄿㅀㅄ]/)) {
+                        var doubleConsonant = splitDoubleConsonant(b);
+                        SV.showMessageBox("Success", "Phonemes assigned to all notes!");
+                    }
                     var possibleBPhonemes = phonemeData.batchim[b];
                     var matchingBPhoneme = null;
 
@@ -221,6 +219,27 @@ function getAllPhonemes(hangeul) {
     });
     return phonemes;
 };
+
+const doubleConsonantMap = {
+    'ㄳ': ['ㄱ', 'ㅅ'],
+    'ㄵ': ['ㄴ', 'ㅈ'],
+    'ㄶ': ['ㄴ', 'ㅎ'],
+    'ㄺ': ['ㄹ', 'ㄱ'],
+    'ㄻ': ['ㄹ', 'ㅁ'],
+    'ㄼ': ['ㄹ', 'ㅂ'],
+    'ㄽ': ['ㄹ', 'ㅅ'],
+    'ㄾ': ['ㄹ', 'ㅌ'],
+    'ㄿ': ['ㄹ', 'ㅍ'],
+    'ㅀ': ['ㄹ', 'ㅎ'],
+    'ㅄ': ['ㅂ', 'ㅅ']
+};
+
+function splitDoubleConsonant(jamo) {
+    if (doubleConsonantMap.hasOwnProperty(jamo)) {
+        return doubleConsonantMap[jamo];
+    }
+    return [jamo];
+}
 
 
 // i am. so sorry. i literally do not have a choice. if someone knows how to import a .json file in synthv. PLEASE.
