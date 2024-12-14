@@ -66,13 +66,11 @@ function main() {
             currentNote = noteGroups[i].getNote(j);
 
             const phoneme = phonemeData[j];  // Get the phoneme corresponding to the note's index
-
             // Skip the note if the phoneme is null
             if (phoneme) {
                 currentNote.setPhonemes(phoneme.phoneme); // Apply the phoneme to the note
-                currentNote.setAttributes({"languageOverride": phoneme.language}); // Assign the language to the note
             }
-            
+
         }
     }
 
@@ -144,6 +142,7 @@ function hangeulToJamoList(text) {
 };
 
 function getPhonemes(jamos) {
+
     var c = jamos[0];
     var v = jamos[1];
     var b = jamos[2];
@@ -174,10 +173,6 @@ function getPhonemes(jamos) {
 
                 // check for a matching batchim (final consonant)
                 if (phonemeData.batchim[b]) {
-                    if(b.match(/[ㄳㄵㄶㄺㄻㄼㄽㄾㄿㅀㅄ]/)) {
-                        var doubleConsonant = splitDoubleConsonant(b);
-                        SV.showMessageBox("Success", "Phonemes assigned to all notes!");
-                    }
                     var possibleBPhonemes = phonemeData.batchim[b];
                     var matchingBPhoneme = null;
 
@@ -213,11 +208,45 @@ function getPhonemes(jamos) {
 
 function getAllPhonemes(hangeul) {
     var jamoList = hangeulToJamoList(hangeul);
+    var newJamosList = treatJamoList(jamoList);
     var phonemes = [];
-    jamoList.forEach(function (jamos) {
-        phonemes.push(getPhonemes(jamos));
+    newJamosList.forEach(function (jamos) {
+        jamoPhoneme = getPhonemes(jamos);
+        if (jamoPhoneme) {
+            phonemes.push(jamoPhoneme);
+        } else {
+            phonemes.push(undefined)
+        }
     });
     return phonemes;
+};
+
+function treatJamoList(jamoList) {
+    var newJamosList = jamoList;
+    jamoList.forEach((function (jamos, index) {
+        var b = jamos[2];
+        var nextJamos;
+        if (index + 1 < jamoList.length) {
+            nextJamos = jamoList[index + 1];
+        }
+
+        if (b && b.match(/[ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ]/)) {
+            if (nextJamos[0] === 'ㅇ') {
+                newJamosList[index].splice(2, 1);
+                newJamosList[index + 1][0] = b;
+            }
+        }
+
+        if (b && b.match(/[ㄳㄵㄶㄺㄻㄼㄽㄾㄿㅀㅄ]/)) {
+            var split = splitDoubleConsonant(b);
+            newJamosList[index][2] = split[0]
+            if (nextJamos[0] === 'ㅇ') {
+                newJamosList[index + 1][0] = split[1];
+
+            }
+        }
+    }));
+    return newJamosList
 };
 
 const doubleConsonantMap = {
