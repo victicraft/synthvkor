@@ -224,16 +224,50 @@ function getAllPhonemes(hangeul) {
 function treatJamoList(jamoList) {
     var newJamosList = jamoList;
     jamoList.forEach((function (jamos, index) {
+        var c = jamos[0];
+
+        var v = jamos[1];
         var b = jamos[2];
         var nextJamos;
         if (index + 1 < jamoList.length) {
             nextJamos = jamoList[index + 1];
         }
 
+
+        // palatalization
+        if (v == "ㅣ") {
+            switch (c) {
+                case "ㄷ":
+                    newJamosList[index][0] = "ㅈ";
+                    SV.showMessageBox("Error", newJamosList[index]);
+                    break;
+                case "ㄸ":
+                    newJamosList[index][0] = "ㅉ";
+                    SV.showMessageBox("Error", newJamosList[index]);
+                    break;
+                case "ㅌ":
+                    newJamosList[index][0] = "ㅊ";
+                    SV.showMessageBox("Error", newJamosList[index]);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        //batchim context
+
         if (b && b.match(/[ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ]/)) {
             if (nextJamos[0] === 'ㅇ') {
                 newJamosList[index].splice(2, 1);
                 newJamosList[index + 1][0] = b;
+                b = null;
+            }
+
+            // palatalization
+            if (nextJamos[0] === 'ㅎ' && b.match(/[ㄷㄸㅌ]/)) {
+                newJamosList[index].splice(2, 1);
+                newJamosList[index + 1][0] = "ㅊ";
+                b = null;
             }
         }
 
