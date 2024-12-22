@@ -12,6 +12,10 @@ When executed, it selects all notes in the current track, and if any of them con
 
 ## TO-DO
 
+### FIX
+
+- error when last note is in hangeul (tries to check for a next note that doesn't exist)
+
 ### Possible
 
 - ~~add double batchim to json object (i forgot)~~
